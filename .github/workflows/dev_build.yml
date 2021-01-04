@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [ dev ]
 
+env:
+  SHORTSHA: $(git rev-parse --short=4 ${{ github.sha }})
+
 jobs:
   publish:
     name: Checkout & Deploy
@@ -43,7 +46,7 @@ jobs:
       - name: Upload dev_build_zip
         uses: actions/upload-artifact@v2
         with:
-          name: dev_build_zip
+          name: dev_build_zip-${{ env.SHORTSHA }}
           path: releases/*.zip
 
       - name: Upload dev_build_crx
