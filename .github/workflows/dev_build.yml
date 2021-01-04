@@ -10,9 +10,6 @@ on:
   pull_request:
     branches: [ dev ]
 
-env:
-  SHORTSHA: $(git rev-parse --short=4 ${{ github.sha }})
-
 jobs:
   publish:
     name: Checkout & Deploy
@@ -39,6 +36,10 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+
       - run: yarn release
         env:
           CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
@@ -46,7 +47,7 @@ jobs:
       - name: Upload dev_build_zip
         uses: actions/upload-artifact@v2
         with:
-          name: dev_build_zip-${{ env.SHORTSHA }}
+          name: dev_build_zip-${{ steps.short-sha.outputs.sha }}
           path: releases/*.zip
 
       - name: Upload dev_build_crx
