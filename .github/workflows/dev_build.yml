@@ -55,3 +55,27 @@ jobs:
         with:
           name: dev_build_crx
           path: releases/*.crx
+      
+      - id: set_var
+        run: |
+          JSON=$(cat ./package.json)
+          echo "::set-output packageJson=${JSON//'%'/'%25'}"
+      
+      - name: Telegram 
+        uses: appleboy/telegram-action@master
+        if: ${{ github.event_name == 'pull' }}
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message_file: 'releases/PT-Plugin-Plus-v${{fromJson(steps.set_var.outputs.packageJson).version}}.crx'
+
+      - name: Telegram 
+        uses: appleboy/telegram-action@master
+        if: ${{ github.event_name == 'pull' }}
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message_file: 'releases/PT-Plugin-Plus-v${{fromJson(steps.set_var.outputs.packageJson).version}}.zip'
+          
+           
+            
