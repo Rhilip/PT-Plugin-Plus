@@ -63,7 +63,7 @@ jobs:
       
       - name: Telegram 
         uses: appleboy/telegram-action@master
-        if: ${{ github.event_name == 'pull' }}
+        if: ${{ github.event_name == 'push' }}
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -71,7 +71,7 @@ jobs:
 
       - name: Telegram 
         uses: appleboy/telegram-action@master
-        if: ${{ github.event_name == 'pull' }}
+        if: ${{ github.event_name == 'push' }}
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
