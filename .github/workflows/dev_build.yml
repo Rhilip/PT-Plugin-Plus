@@ -47,35 +47,11 @@ jobs:
       - name: Upload dev_build_zip
         uses: actions/upload-artifact@v2
         with:
-          name: dev_build_zip-${{ steps.short-sha.outputs.sha }}
+          name: dev-build-${{ steps.short-sha.outputs.sha }}-zip
           path: releases/*.zip
 
       - name: Upload dev_build_crx
         uses: actions/upload-artifact@v2
         with:
-          name: dev_build_crx
+          name: dev-build-${{ steps.short-sha.outputs.sha }}-crx
           path: releases/*.crx
-      
-      - id: set_var
-        run: |
-          JSON=$(cat ./package.json)
-          echo "::set-output packageJson=${JSON//'%'/'%25'}"
-      
-      - name: Telegram 
-        uses: appleboy/telegram-action@master
-        if: ${{ github.event_name == 'push' }}
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message_file: 'releases/PT-Plugin-Plus-v${{fromJson(steps.set_var.outputs.packageJson).version}}.crx'
-
-      - name: Telegram 
-        uses: appleboy/telegram-action@master
-        if: ${{ github.event_name == 'push' }}
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message_file: 'releases/PT-Plugin-Plus-v${{fromJson(steps.set_var.outputs.packageJson).version}}.zip'
-          
-           
-            
