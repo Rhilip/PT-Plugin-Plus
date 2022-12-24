@@ -51,7 +51,19 @@ jobs:
           mv canary.xml pages/update/canary.xml -f
           mv extension.crx build/PT-Plugin-Plus-${{ needs.action.outputs.version }}.crx
 
-      - name: Deploy update Xml
+      - name: Get And move Xpi Build
+        uses: actions/download-artifact@v3
+        if: ${{ needs.action.outputs.buildXPI == 'success' }}
+        with:
+          name:
+            dev-build-${{ needs.action.outputs.version }}-xpi
+
+      - if: ${{ needs.action.outputs.buildXPI == 'success' }}
+        run: | 
+          mv extension.signed.xpi build/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi
+          echo $(jq '.addons[].updates += [{"version": ${{ needs.action.outputs.version }}, "update_link": "https://github.com/pt-plugins/PT-Plugin-Plus/releases/download/v${{ needs.action.outputs.version }}/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi"}]' pages/update/firefox.json) > pages/update/firefox.json
+
+      - name: Deploy update xml and json
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,16 +72,6 @@ jobs:
           force_orphan: true
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
-
-      - name: Get And move Xpi Build
-        uses: actions/download-artifact@v3
-        if: ${{ needs.action.outputs.exist_xpi_file == 'success' }}
-        with:
-          name:
-            dev-build-${{ needs.action.outputs.version }}-xpi
-
-      - if: ${{ needs.action.outputs.exist_xpi_file == 'success' }}
-        run: mv extension.signed.xpi build/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi
 
       - uses: ncipollo/release-action@v1
         with:
