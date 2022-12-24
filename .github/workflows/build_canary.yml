@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/build_action.yml
     with:
       ref: 'dev'
+      build_xpi: true
     secrets: inherit
 
   canary:
