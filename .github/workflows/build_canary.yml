@@ -62,7 +62,7 @@ jobs:
       - if: ${{ needs.action.outputs.buildXPI == 'success' }}
         run: | 
           mv extension.signed.xpi build/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi
-          echo $(jq '.addons[].updates += [{"version": ${{ needs.action.outputs.version }}, "update_link": "https://github.com/pt-plugins/PT-Plugin-Plus/releases/download/v${{ needs.action.outputs.version }}/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi"}]' pages/update/firefox.json) > pages/update/firefox.json
+          echo $(jq '.addons[].updates += [{"version": "${{ needs.action.outputs.version }}", "update_link": "https://github.com/pt-plugins/PT-Plugin-Plus/releases/download/v${{ needs.action.outputs.version }}/PT-Plugin-Plus-${{ needs.action.outputs.version }}.xpi"}]' pages/update/firefox.json) > pages/update/firefox.json
 
       - name: Deploy update xml and json
         uses: peaceiris/actions-gh-pages@v3
